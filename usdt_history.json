@@ -1,0 +1,13 @@
+{
+  "asset": "USDT",
+  "fiat": "VES",
+  "source": "Binance P2P (mismo endpoint que usa la app Calculadora de Monedas)",
+  "sampleSize": 10,
+  "points": [
+    {
+      "timestamp": "2026-10-08T04:17:12Z",
+      "compra": 1015.4524,
+      "venta": 1017.4139
+    }
+  ]
+}

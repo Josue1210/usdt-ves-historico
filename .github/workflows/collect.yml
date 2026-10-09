@@ -1,0 +1,33 @@
+name: Recolectar USDT/VES
+
+on:
+  schedule:
+    # Cada hora, las 24 horas del día, los 7 días, indefinidamente. Cada corrida que llega a
+    # commitear cuenta como actividad del repo, lo que evita que GitHub desactive este cron
+    # por inactividad (se auto-pausa a los 60 días sin actividad) — se sostiene solo.
+    - cron: "0 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recolectar-usdt-ves
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Recolectar punto de Binance P2P
+        run: python3 collect.py
+
+      - name: Commitear si hay cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add usdt_history.json
+          git diff --cached --quiet || git commit -m "Punto $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
