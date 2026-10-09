@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """Recolecta un punto de Compra/Venta de USDT/VES desde Binance P2P y lo agrega a
 usdt_history.json. Pensado para correr vía GitHub Actions, una vez por hora, indefinidamente.
-
-Usa el mismo endpoint, el mismo tamaño de muestra y el mismo User-Agent que ya usa la app
-Calculadora de Monedas (ExchangeRateRepository.kt), para que los valores recolectados acá
-sean consistentes con los que la app ya muestra en vivo.
 """
 
 import json
@@ -15,7 +11,8 @@ import urllib.request
 from datetime import datetime, timezone
 
 BINANCE_P2P_ENDPOINT = "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search"
-USER_AGENT = "Mozilla/5.0 (Android) TasaVE"
+# Binance exige un User-Agent de navegador; con el de Python/Java por defecto responde 403.
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
 SAMPLE_SIZE = 10
 HISTORY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "usdt_history.json")
 
@@ -25,8 +22,7 @@ def fetch_price(trade_type: str) -> float:
 
     tradeType está invertido respecto a cómo lo llamamos nosotros: en Binance P2P, "SELL"
     trae los anuncios de quienes QUIEREN COMPRAR tu USDT (el precio al que el mercado TE
-    COMPRA), y "BUY" trae los de quienes venden (el precio al que TE VENDEN). Mismo criterio
-    que en la app Android.
+    COMPRA), y "BUY" trae los de quienes venden (el precio al que TE VENDEN).
     """
     body = json.dumps(
         {
@@ -74,7 +70,7 @@ def load_history() -> dict:
         return {
             "asset": "USDT",
             "fiat": "VES",
-            "source": "Binance P2P (mismo endpoint que usa la app Calculadora de Monedas)",
+            "source": "Binance P2P, agregado por hora",
             "sampleSize": SAMPLE_SIZE,
             "points": [],
         }

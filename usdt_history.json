@@ -1,7 +1,7 @@
 {
   "asset": "USDT",
   "fiat": "VES",
-  "source": "Binance P2P (mismo endpoint que usa la app Calculadora de Monedas)",
+  "source": "Binance P2P, agregado por hora",
   "sampleSize": 10,
   "points": [
     {
