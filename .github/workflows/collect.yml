@@ -1,11 +1,11 @@
 name: Recolectar USDT/VES
 
 on:
-  schedule:
-    # Cada hora, las 24 horas del día, los 7 días, indefinidamente. Cada corrida que llega a
-    # commitear cuenta como actividad del repo, lo que evita que GitHub desactive este cron
-    # por inactividad (se auto-pausa a los 60 días sin actividad) — se sostiene solo.
-    - cron: "0 * * * *"
+  # Sin "schedule:": el cron interno de GitHub Actions no es confiable para esta frecuencia
+  # (en la práctica llegó a correr cada 5-7 horas en vez de cada hora, sin reportar ningún
+  # error — simplemente no se disparaba). En su lugar, un servicio externo gratis llama a la
+  # API de GitHub cada hora para disparar este mismo workflow_dispatch manualmente; esas
+  # corridas "a pedido" sí son confiables porque no dependen de la cola del trigger schedule.
   workflow_dispatch: {}
 
 permissions:

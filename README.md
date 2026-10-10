@@ -19,10 +19,11 @@ hacia adelante, consultando Binance P2P una vez por hora y guardando cada lectur
 - `collect.py` llama al endpoint público de anuncios de Binance P2P
   (`POST p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search`), promedio de los primeros 10
   anuncios por lado (Binance devuelve 403 sin un `User-Agent` de navegador).
-- Un workflow de GitHub Actions (`.github/workflows/collect.yml`) lo corre con cron
-  `0 * * * *`: cada hora, las 24 horas del día, indefinidamente. Cada corrida que encuentra un
-  punto nuevo lo commitea — y ese mismo commit es lo que mantiene el workflow activo (GitHub
-  desactiva los cron sin actividad después de 60 días).
+- Un workflow de GitHub Actions (`.github/workflows/collect.yml`) corre `collect.py` y
+  commitea el punto nuevo. Se dispara vía `workflow_dispatch` (API), llamado una vez por hora
+  desde un servicio externo gratis — **no** con el trigger `schedule:` de GitHub, que en la
+  práctica resultó nada confiable para esta frecuencia (llegó a correr cada 5-7 horas en vez
+  de cada hora, sin reportar ningún error).
 - Los puntos se guardan en `usdt_history.json`, en la raíz del repo, como un arreglo creciente.
   Todo el historial queda versionado en git: se puede ver, auditar o corregir a mano con un
   commit si hace falta.
